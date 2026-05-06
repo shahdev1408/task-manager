@@ -5,7 +5,11 @@ const baseQuery = fetchBaseQuery({
     ? import.meta.env.VITE_APP_BASE_URL + "/api"
     : "/api",
   credentials: "include",
-  prepareHeaders: (headers) => {
+  prepareHeaders: (headers, { getState }) => {
+    const token = getState()?.auth?.user?.token;
+    if (token) {
+      headers.set("authorization", `Bearer ${token}`);
+    }
     headers.set("Content-Type", "application/json");
     return headers;
   },

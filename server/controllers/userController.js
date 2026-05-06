@@ -6,13 +6,10 @@ import createJWT from "../utils/index.js";
 // POST request - login user
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res
-      .status(401)
-      .json({ status: false, message: "Invalid email or password." });
+    return res.status(401).json({ status: false, message: "Invalid email or password." });
   }
 
   if (!user?.isActive) {
@@ -25,15 +22,11 @@ const loginUser = asyncHandler(async (req, res) => {
   const isMatch = await user.matchPassword(password);
 
   if (user && isMatch) {
-    createJWT(res, user._id);
-
+    const token = createJWT(res, user._id);
     user.password = undefined;
-
-    res.status(200).json(user);
+    res.status(200).json({ ...user._doc, token });
   } else {
-    return res
-      .status(401)
-      .json({ status: false, message: "Invalid email or password" });
+    return res.status(401).json({ status: false, message: "Invalid email or password" });
   }
 });
 
