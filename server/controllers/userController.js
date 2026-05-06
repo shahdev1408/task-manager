@@ -22,9 +22,13 @@ const loginUser = asyncHandler(async (req, res) => {
   const isMatch = await user.matchPassword(password);
 
   if (user && isMatch) {
-    const token = createJWT(res, user._id);
-    user.password = undefined;
-    res.status(200).json({ ...user._doc, token });
+  const token = createJWT(res, user._id);
+  user.password = undefined;
+  
+  const userData = user.toObject();
+  userData.token = token;
+  
+  res.status(200).json(userData);
   } else {
     return res.status(401).json({ status: false, message: "Invalid email or password" });
   }
