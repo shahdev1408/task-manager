@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "/api",
+  baseUrl: import.meta.env.VITE_APP_BASE_URL
+    ? import.meta.env.VITE_APP_BASE_URL + "/api"
+    : "/api",
   credentials: "include",
   prepareHeaders: (headers) => {
     headers.set("Content-Type", "application/json");
